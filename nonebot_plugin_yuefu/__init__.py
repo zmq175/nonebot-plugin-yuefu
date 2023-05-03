@@ -10,7 +10,7 @@ from .config import Config
 global_config = get_driver().config
 config = Config.parse_obj(global_config)
 
-voice = on_command("说", aliases={"语音"}, block=True, priority=4)
+voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 
 
 def speech_synthesis_to_wave_file(text: str):
