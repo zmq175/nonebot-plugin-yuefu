@@ -1,3 +1,4 @@
+import nonebot
 import requests
 from nonebot import get_driver, on_command
 from nonebot.typing import T_State
@@ -7,15 +8,15 @@ from nonebot import logger
 
 from .config import Config
 
-global_config = get_driver().config
+global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
 voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 
 
 def speech_synthesis_to_wave_file(text: str):
-    subscription_key = config.SPEECH_KEY
-    region = config.SPEECH_REGION
+    subscription_key = config.speech_key
+    region = config.speech_region
     logger.info(f'KEY：{subscription_key}, REGION:{region}')
 
     # construct request body in SSML format
