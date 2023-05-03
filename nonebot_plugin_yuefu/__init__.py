@@ -16,7 +16,7 @@ voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 def speech_synthesis_to_wave_file(text: str):
     subscription_key = config.SPEECH_KEY
     region = config.SPEECH_REGION
-    print(f'KEY：{subscription_key}, REGION:{region}')
+    logger.info(f'KEY：{subscription_key}, REGION:{region}')
 
     # construct request body in SSML format
     ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='zh-CN'><voice name='zh-CN-YunfengNeural'>" \
@@ -51,6 +51,8 @@ def get_token(subscription_key, region):
     headers = {
         "Ocp-Apim-Subscription-Key": subscription_key
     }
+
+    logger.info(f"request url:{url}, headers: {headers}")
 
     # send the request and get the response
     response = requests.post(url, headers=headers)
