@@ -22,13 +22,13 @@ voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 @run_preprocessor
 async def check(bot: Bot, matcher: Matcher, event: Event):
     logger.info("start check user")
-    if isinstance(event, MessageEvent):
+    if isinstance(event, MessageEvent) and matcher is not None:
         id_ = event.get_user_id()
         
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.post(
-                    "http://localhost:5000/api/check_user",
+                    "http://127.0.0.1:5000/api/check_user",
                     json= {'account': id_},
                     raise_for_status=True,
                 ) as response:
