@@ -29,7 +29,7 @@ async def check(bot: Bot, matcher: Matcher, event: Event):
             try:
                 async with session.post(
                     "http://localhost:5000/api/check_user",
-                    data= {'account': id_},
+                    json= {'account': id_},
                     raise_for_status=True,
                 ) as response:
                     exists = (await response.json())['exists']
