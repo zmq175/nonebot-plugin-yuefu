@@ -1,3 +1,4 @@
+import json
 import nonebot
 import requests
 from nonebot import get_driver, on_command
@@ -5,6 +6,7 @@ from nonebot.typing import T_State
 from nonebot.params import ArgStr, CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageEvent, MessageSegment
 from nonebot import logger
+from nonebot.message import run_preprocessor
 
 from .config import Config
 
@@ -12,6 +14,21 @@ global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
 voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
+
+@run_preprocessor
+async def check(matcher: Matcher, bot: Bot, event: Event):
+    if type(event) == MessageEvent:
+        id_ = event.get_user_id()
+        response = requests.post(
+            "http://127.0.0.1:5000/api/check_user",
+            data= {
+                'account': id_
+            }
+        )
+        if response.status_code == 200:
+            exists = json.loads(response.text)['exists']
+            if not exists:
+                matcher.finish("你是未验证账号不能使用机器人，请去http://user.chengzhi.info/进行验证！")
 
 
 def speech_synthesis_to_wave_file(text: str):
