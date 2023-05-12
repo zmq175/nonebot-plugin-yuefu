@@ -20,7 +20,8 @@ voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 
 @run_preprocessor
 async def check(bot: Bot, matcher: Matcher, event: Event):
-    if type(event) is MessageEvent:
+    logger.info("start check user")
+    if isinstance(event, MessageEvent):
         id_ = event.get_user_id()
         
         async with aiohttp.ClientSession() as session:
