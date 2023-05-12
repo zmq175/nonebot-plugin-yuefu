@@ -34,11 +34,11 @@ async def check(bot: Bot, matcher: Matcher, event: Event):
                 ) as response:
                     exists = (await response.json())['exists']
                     if not exists:
-                        await bot.sned(event=event, message="你是未验证账号不能使用机器人，请去 http://user.chengzhi.info/ 进行验证！")
+                        await bot.send(event=event, message="你是未验证账号不能使用机器人，请去 http://user.chengzhi.info/ 进行验证！")
                         raise IgnoredException("account not validated")
             except (aiohttp.ClientError, json.JSONDecodeError) as e:
                 # 异常处理逻辑
-                await bot.sned(event=event, message=f"发生错误：{str(e)}")
+                await bot.send(event=event, message=f"发生错误：{str(e)}")
 
 
 def speech_synthesis_to_wave_file(text: str):
