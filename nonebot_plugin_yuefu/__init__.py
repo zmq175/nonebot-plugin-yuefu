@@ -7,6 +7,8 @@ from nonebot.params import ArgStr, CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageEvent, MessageSegment
 from nonebot import logger
 from nonebot.message import run_preprocessor
+from nonebot.internal.adapter import Event
+from nonebot.internal.matcher import Matcher
 
 from .config import Config
 
