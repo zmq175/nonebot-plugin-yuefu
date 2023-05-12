@@ -1,12 +1,12 @@
 import json
 import nonebot
 import requests
-from nonebot import get_driver, on_command
+from nonebot import get_driver, on_command, Bot
 from nonebot.typing import T_State
 from nonebot.params import ArgStr, CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageEvent, MessageSegment
 from nonebot import logger
-from nonebot.message import run_preprocessor
+from nonebot.message import event_preprocessor
 from nonebot.internal.adapter import Event
 from nonebot.internal.matcher import Matcher
 
@@ -17,9 +17,9 @@ config = Config.parse_obj(global_config)
 
 voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 
-@run_preprocessor
-async def check(matcher: Matcher, event: Event):
-    if type(event) == MessageEvent:
+@event_preprocessor
+async def check(bot: Bot, matcher: Matcher, event: Event):
+    if type(event) is MessageEvent:
         id_ = event.get_user_id()
         response = requests.post(
             "http://127.0.0.1:5000/api/check_user",
