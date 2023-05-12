@@ -1,12 +1,13 @@
 import json
 import nonebot
 import requests
+import aiohttp
 from nonebot import get_driver, on_command, Bot
 from nonebot.typing import T_State
 from nonebot.params import ArgStr, CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageEvent, MessageSegment
 from nonebot import logger
-from nonebot.message import event_preprocessor
+from nonebot.message import run_preprocessor
 from nonebot.internal.adapter import Event
 from nonebot.internal.matcher import Matcher
 
@@ -17,20 +18,24 @@ config = Config.parse_obj(global_config)
 
 voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 
-@event_preprocessor
+@run_preprocessor
 async def check(bot: Bot, matcher: Matcher, event: Event):
     if type(event) is MessageEvent:
         id_ = event.get_user_id()
-        response = requests.post(
-            "http://127.0.0.1:5000/api/check_user",
-            data= {
-                'account': id_
-            }
-        )
-        if response.status_code == 200:
-            exists = json.loads(response.text)['exists']
-            if not exists:
-                matcher.finish("你是未验证账号不能使用机器人，请去http://user.chengzhi.info/进行验证！")
+        
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.post(
+                    "http://localhost:5000/api/check_user",
+                    data= {'account': id_},
+                    raise_for_status=True,
+                ) as response:
+                    exists = (await response.json())['exists']
+                    if not exists:
+                        await event.finish("你是未验证账号不能使用机器人，请去 http://user.chengzhi.info/ 进行验证！")
+            except (aiohttp.ClientError, json.JSONDecodeError) as e:
+                # 异常处理逻辑
+                await event.finish(f"发生错误：{str(e)}")
 
 
 def speech_synthesis_to_wave_file(text: str):
