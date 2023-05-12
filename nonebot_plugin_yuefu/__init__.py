@@ -10,6 +10,7 @@ from nonebot import logger
 from nonebot.message import run_preprocessor
 from nonebot.internal.adapter import Event
 from nonebot.internal.matcher import Matcher
+from nonebot.exception import IgnoredException
 
 from .config import Config
 
@@ -33,10 +34,11 @@ async def check(bot: Bot, matcher: Matcher, event: Event):
                 ) as response:
                     exists = (await response.json())['exists']
                     if not exists:
-                        await event.finish("你是未验证账号不能使用机器人，请去 http://user.chengzhi.info/ 进行验证！")
+                        await bot.sned(event=event, message="你是未验证账号不能使用机器人，请去 http://user.chengzhi.info/ 进行验证！")
+                        raise IgnoredException("account not validated")
             except (aiohttp.ClientError, json.JSONDecodeError) as e:
                 # 异常处理逻辑
-                await event.finish(f"发生错误：{str(e)}")
+                await bot.sned(event=event, message=f"发生错误：{str(e)}")
 
 
 def speech_synthesis_to_wave_file(text: str):
