@@ -18,7 +18,7 @@ config = Config.parse_obj(global_config)
 voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
 
 @run_preprocessor
-async def check(matcher: Matcher, bot: Bot, event: Event):
+async def check(matcher: Matcher, event: Event):
     if type(event) == MessageEvent:
         id_ = event.get_user_id()
         response = requests.post(
