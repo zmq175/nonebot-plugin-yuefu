@@ -1,10 +1,16 @@
+import json
 import nonebot
 import requests
-from nonebot import get_driver, on_command
+import aiohttp
+from nonebot import get_driver, on_command, Bot
 from nonebot.typing import T_State
 from nonebot.params import ArgStr, CommandArg
 from nonebot.adapters.onebot.v11 import Message, MessageEvent, MessageSegment
 from nonebot import logger
+from nonebot.message import run_preprocessor
+from nonebot.internal.adapter import Event
+from nonebot.internal.matcher import Matcher
+from nonebot.exception import IgnoredException
 
 from .config import Config
 
@@ -12,7 +18,6 @@ global_config = nonebot.get_driver().config
 config = Config.parse_obj(global_config)
 
 voice = on_command("speak", aliases={"府说"}, block=True, priority=4)
-
 
 def speech_synthesis_to_wave_file(text: str):
     subscription_key = config.speech_key
